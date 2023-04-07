@@ -2,10 +2,13 @@ package loader
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
-func Load(tm int) {
+func Load(tm int, done chan bool, wg *sync.WaitGroup) {
+	defer wg.Done()
+
 	// Define the loader animation frames
 	frames := []string{
 		"[           ]",
@@ -29,4 +32,7 @@ func Load(tm int) {
 		fmt.Print("\r" + frames[i%len(frames)])
 		time.Sleep(100 * time.Millisecond) // Delay between frames
 	}
+
+	// Send done signal to function1 to stop
+	done <- true
 }

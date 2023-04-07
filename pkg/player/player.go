@@ -1,32 +1,27 @@
 package player
 
 import (
+	"bytes"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 
+	"github.com/404th/helloworld/biny"
+	"github.com/404th/helloworld/model"
 	"github.com/hajimehoshi/go-mp3"
 	"github.com/hajimehoshi/oto"
 )
 
-func Run() error {
-	currentFolder, err := os.Getwd()
-	if err != nil {
-		fmt.Println("Failed to get current folder path:", err)
-		return err
-	}
+func Run(task *model.Task) error {
+	road_to_music := fmt.Sprintf("music/%d.mp3", task.Music)
 
-	// Specify a file path relative to the current folder
-	filePath := filepath.Join(currentFolder, "music", "b1.mp3")
-
-	f, err := os.Open(filePath)
+	f, err := biny.Asset(road_to_music)
 	if err != nil {
 		return err
 	}
-	defer f.Close()
 
-	d, err := mp3.NewDecoder(f)
+	r := bytes.NewReader(f)
+
+	d, err := mp3.NewDecoder(r)
 	if err != nil {
 		return err
 	}
